@@ -145,7 +145,8 @@ Pass the `got:` value as `uiPnpmDepsHash`, or add an entry to
             enable = true;
             # Defaults to the CUDA variant when nixpkgs.config.cudaSupport is set.
             package = mesh-llm-nix.packages.${pkgs.stdenv.hostPlatform.system}.mesh-llm-cuda;
-            extraArgs = [ "--model" "Qwen3-8B-Q4_K_M" "--publish" ];
+            settings.models = [ { model = "Qwen3-8B-Q4_K_M"; } ];
+            extraArgs = [ "--publish" ];
             joinFile = "/run/secrets/mesh-llm-invite";
           };
         })
@@ -155,6 +156,11 @@ Pass the `got:` value as `uiPnpmDepsHash`, or add an entry to
 }
 ```
 
+Declare startup models in `settings.models`, not with `--model` in
+`extraArgs`. A catalog model given on the command line is served under a
+content hash such as `local-gguf/sha256-…`; a configured model keeps its
+public catalog ID, which is also the name peers see and prices use.
+
 The service runs `mesh-llm serve` as the `mesh-llm` system user. Its home is
 `/var/lib/mesh-llm`, so the configuration, node identity, and model cache are
 below that directory. Options:
@@ -163,6 +169,7 @@ below that directory. Options:
 |---|---|---|
 | `package` | CPU or CUDA variant | The variant decides the inference backend |
 | `settings` | `{ }` | Generates `~/.mesh-llm/config.toml`; when set, the file is replaced on every start |
+| `logFormat` | `"json"` | One JSON event per journal line; `"pretty"` redraws status panels |
 | `port` / `consolePort` | `9337` / `3131` | OpenAI-compatible API and management console |
 | `listenAll` | `false` | Bind the API and console on all interfaces |
 | `bindPort` | `null` | Fixed UDP port for mesh QUIC traffic |

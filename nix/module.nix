@@ -17,6 +17,8 @@ let
     (toString cfg.port)
     "--console"
     (toString cfg.consolePort)
+    "--log-format"
+    cfg.logFormat
   ]
   ++ lib.optional cfg.listenAll "--listen-all"
   ++ lib.optionals (cfg.bindPort != null) [
@@ -50,7 +52,11 @@ in
         }
       '';
       description = ''
-        Contents of ~/.mesh-llm/config.toml for the service user. When set,
+        Contents of ~/.mesh-llm/config.toml for the service user. Declare
+        startup models here rather than with `--model` in extraArgs: a
+        catalog model from the command line is served under a content hash
+        such as local-gguf/sha256-…, while a configured one keeps its public
+        catalog ID. When set,
         the file is replaced on every start, so changes made from the console
         do not persist. When empty, the file is left under MeshLLM's control.
         Do not put secrets here because the Nix store is world-readable.
@@ -67,6 +73,18 @@ in
       type = types.port;
       default = 3131;
       description = "Port of the management console and API.";
+    };
+
+    logFormat = mkOption {
+      type = types.enum [
+        "json"
+        "pretty"
+      ];
+      default = "json";
+      description = ''
+        Output format. The default writes one JSON event per journal line;
+        pretty redraws status panels, which suits a terminal, not the journal.
+      '';
     };
 
     listenAll = mkOption {
@@ -104,11 +122,7 @@ in
     extraArgs = mkOption {
       type = types.listOf types.str;
       default = [ ];
-      example = [
-        "--model"
-        "Qwen3-8B-Q4_K_M"
-        "--publish"
-      ];
+      example = [ "--publish" ];
       description = "Extra arguments for `mesh-llm serve`.";
     };
 
