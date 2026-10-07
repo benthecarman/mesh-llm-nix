@@ -40,6 +40,31 @@ let
   platform = "linux-${arch}";
   flavor = if isCuda then "cuda${cudaPackages.cudaMajorVersion}" else backend;
   runtimeId = "meshllm-native-runtime-${platform}-${flavor}";
+
+  # nvcc flags for cudaArchitectures, in CMAKE_CUDA_ARCHITECTURES syntax.
+  # Without them nvcc embeds only PTX for its default architecture, which a
+  # driver older than the toolkit cannot JIT-compile.
+  cudaGencodeFlags = lib.concatMap (
+    arch:
+    let
+      real = lib.removeSuffix "-real" arch;
+      virtual = lib.removeSuffix "-virtual" arch;
+    in
+    if arch == "" then
+      [ ]
+    else if lib.elem arch [
+      "native"
+      "all"
+      "all-major"
+    ] then
+      [ "-arch=${arch}" ]
+    else if real != arch then
+      [ "--generate-code=arch=compute_${real},code=sm_${real}" ]
+    else if virtual != arch then
+      [ "--generate-code=arch=compute_${virtual},code=compute_${virtual}" ]
+    else
+      [ "--generate-code=arch=compute_${arch},code=[compute_${arch},sm_${arch}]" ]
+  ) (lib.splitString ";" cudaArchitectures);
 in
 effectiveStdenv.mkDerivation {
   pname = "mesh-llm-native-runtime-${flavor}";
@@ -164,7 +189,7 @@ effectiveStdenv.mkDerivation {
     toolArgs=()
     ${lib.optionalString isCuda ''
       mkdir -p "$runtimeDir/tools"
-      nvcc -O3 -std=c++17 -cudart shared \
+      nvcc -O3 -std=c++17 -cudart shared ${lib.escapeShellArgs cudaGencodeFlags} \
         "${meshLlmSrc}/skippy/crates/skippy-gpu-bench/native/cuda/membench-fingerprint.cu" \
         -o "$runtimeDir/tools/mesh-llm-gpu-benchmark"
       fixRpath "$runtimeDir/tools/mesh-llm-gpu-benchmark" '$ORIGIN/../lib'
