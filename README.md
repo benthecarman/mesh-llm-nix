@@ -32,6 +32,7 @@ below.
 | `native-runtime-{cpu,cuda,vulkan}` | One native runtime bundle each |
 | `mesh-llm-ui` | The built web console that is embedded in `mesh-llm` |
 | `llama-cpp-skippy` | llama.cpp source with the Skippy patches applied |
+| `nwc-wallet` | The [Nostr Wallet Connect wallet plugin](https://github.com/benthecarman/nwc-wallet) |
 
 MeshLLM loads its inference engine from a separate native runtime: patched
 llama.cpp shared libraries and a `manifest.json`. Upstream release archives
@@ -177,6 +178,38 @@ For CUDA, the host needs the NVIDIA driver (`hardware.nvidia`) so that
 there. MeshLLM uses `nvidia-smi` to find the GPUs and their compute
 capability, so `extraPackages` puts the driver's `nvidia-smi` on the service's
 `PATH` when `services.xserver.videoDrivers` contains `"nvidia"`.
+
+## Plugins and wallets
+
+MeshLLM starts each plugin as a separate process from a `[[plugin]]` entry in
+its configuration. The entry's `command` can be a store path, so a packaged
+plugin needs no `mesh-llm plugins install`. Paid inference uses a `wallet.v1`
+plugin and works on mainnet only.
+
+For example, to use the NWC wallet with the URI in a root-managed secret file
+owned by the service user:
+
+```nix
+services.mesh-llm.settings = {
+  plugin = [
+    {
+      name = "nwc-wallet";
+      command = lib.getExe mesh-llm-nix.packages.${system}.nwc-wallet;
+      args = [ "--uri-file" "/run/secrets/mesh-llm-nwc-uri" ];
+    }
+  ];
+  payments.wallet = "nwc-wallet";
+};
+```
+
+The URI is a spending credential. Keep it out of the Nix store, and make the
+file readable only by the service user. Prices and spending policy are not
+configuration; set them on the running node with `mesh-llm wallet pricing`
+and `mesh-llm wallet policy`. The ledger is in
+`/var/lib/mesh-llm/.mesh-llm/payments`.
+
+To build the plugin from another revision, override the `nwc-wallet-src`
+input like `mesh-llm-src`, or pass `nwcWalletSrc` to `lib.mkPackages`.
 
 ## Override the build
 

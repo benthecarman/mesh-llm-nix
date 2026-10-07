@@ -32,10 +32,27 @@
         "type": "github"
       }
     },
+    "nwc-wallet-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1790891562,
+        "narHash": "sha256-aL2fypr+UPkTTKBip3lS21sxFH+bBhwVni6YrOtQ2G4=",
+        "owner": "benthecarman",
+        "repo": "nwc-wallet",
+        "rev": "bfd21f96f750f079b92c015e247e71376726cf9b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "benthecarman",
+        "repo": "nwc-wallet",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "mesh-llm-src": "mesh-llm-src",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "nwc-wallet-src": "nwc-wallet-src"
       }
     }
   },

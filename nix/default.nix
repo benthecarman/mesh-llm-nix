@@ -5,6 +5,7 @@
   src,
   rev ? null,
   uiPnpmDepsHash ? null,
+  nwcWalletSrc,
 }:
 
 lib.makeScope newScope (
@@ -67,6 +68,9 @@ lib.makeScope newScope (
     };
     # The variant matching the package set's configuration.
     mesh-llm-default = if config.cudaSupport or false then self.mesh-llm-cuda else self.mesh-llm;
+
+    inherit nwcWalletSrc;
+    nwc-wallet = self.callPackage ./nwc-wallet.nix { };
 
     skippy = self.callPackage ./product.nix {
       pname = "skippy";

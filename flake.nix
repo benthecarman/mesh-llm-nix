@@ -11,6 +11,11 @@
       url = "github:Mesh-LLM/mesh-llm";
       flake = false;
     };
+    # The NWC wallet plugin, overridable the same way.
+    nwc-wallet-src = {
+      url = "github:benthecarman/nwc-wallet";
+      flake = false;
+    };
   };
 
   outputs =
@@ -18,6 +23,7 @@
       self,
       nixpkgs,
       mesh-llm-src,
+      nwc-wallet-src,
     }:
     let
       inherit (nixpkgs) lib;
@@ -36,9 +42,15 @@
           src ? mesh-llm-src,
           rev ? src.rev or null,
           uiPnpmDepsHash ? null,
+          nwcWalletSrc ? nwc-wallet-src,
         }:
         pkgs.callPackage ./nix {
-          inherit src rev uiPnpmDepsHash;
+          inherit
+            src
+            rev
+            uiPnpmDepsHash
+            nwcWalletSrc
+            ;
         };
 
       pkgsFor = system: nixpkgs.legacyPackages.${system};
@@ -78,6 +90,7 @@
             llama-cpp-skippy
             native-runtime-cpu
             native-runtime-vulkan
+            nwc-wallet
             ;
           inherit (cudaMeshPkgs) mesh-llm-cuda native-runtime-cuda;
         }
