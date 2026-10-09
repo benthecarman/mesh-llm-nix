@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "ldk-server-wallet-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1790891562,
+        "narHash": "sha256-dUfwfL33ENKONYjt8xVZPml0NVFfDvWj32Ald2XvRn8=",
+        "owner": "benthecarman",
+        "repo": "ldk-server-wallet",
+        "rev": "99b28c0dc1b48b0cf60ae4b0ee33996a60d72329",
+        "type": "github"
+      },
+      "original": {
+        "owner": "benthecarman",
+        "repo": "ldk-server-wallet",
+        "type": "github"
+      }
+    },
     "mesh-llm-src": {
       "flake": false,
       "locked": {
@@ -50,6 +66,7 @@
     },
     "root": {
       "inputs": {
+        "ldk-server-wallet-src": "ldk-server-wallet-src",
         "mesh-llm-src": "mesh-llm-src",
         "nixpkgs": "nixpkgs",
         "nwc-wallet-src": "nwc-wallet-src"

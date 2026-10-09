@@ -33,6 +33,7 @@ below.
 | `mesh-llm-ui` | The built web console that is embedded in `mesh-llm` |
 | `llama-cpp-skippy` | llama.cpp source with the Skippy patches applied |
 | `nwc-wallet` | The [Nostr Wallet Connect wallet plugin](https://github.com/benthecarman/nwc-wallet) |
+| `ldk-server-wallet` | The [LDK Server wallet plugin](https://github.com/benthecarman/ldk-server-wallet) |
 
 MeshLLM loads its inference engine from a separate native runtime: patched
 llama.cpp shared libraries and a `manifest.json`. Upstream release archives
@@ -215,8 +216,26 @@ configuration; set them on the running node with `mesh-llm wallet pricing`
 and `mesh-llm wallet policy`. The ledger is in
 `/var/lib/mesh-llm/.mesh-llm/payments`.
 
-To build the plugin from another revision, override the `nwc-wallet-src`
-input like `mesh-llm-src`, or pass `nwcWalletSrc` to `lib.mkPackages`.
+The LDK Server wallet is configured the same way, with the node's gRPC
+address, its TLS certificate, and a file holding a hex macaroon:
+
+```nix
+{
+  name = "ldk-server-wallet";
+  command = lib.getExe mesh-llm-nix.packages.${system}.ldk-server-wallet;
+  args = [
+    "--server" "ldk.example:3536"
+    "--cert-file" "/etc/ldk-server/tls.crt"
+    "--macaroon-file" "/run/secrets/mesh-llm-ldk-server-macaroon"
+  ];
+}
+```
+
+The macaroon authorizes spending, so treat it like the NWC URI.
+
+To build a plugin from another revision, override the `nwc-wallet-src` or
+`ldk-server-wallet-src` input like `mesh-llm-src`, or pass `nwcWalletSrc` or
+`ldkServerWalletSrc` to `lib.mkPackages`.
 
 ## Override the build
 

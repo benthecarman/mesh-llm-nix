@@ -6,6 +6,7 @@
   rev ? null,
   uiPnpmDepsHash ? null,
   nwcWalletSrc,
+  ldkServerWalletSrc,
 }:
 
 lib.makeScope newScope (
@@ -71,6 +72,9 @@ lib.makeScope newScope (
 
     inherit nwcWalletSrc;
     nwc-wallet = self.callPackage ./nwc-wallet.nix { };
+
+    inherit ldkServerWalletSrc;
+    ldk-server-wallet = self.callPackage ./ldk-server-wallet.nix { };
 
     skippy = self.callPackage ./product.nix {
       pname = "skippy";

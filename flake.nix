@@ -16,6 +16,11 @@
       url = "github:benthecarman/nwc-wallet";
       flake = false;
     };
+    # The LDK Server wallet plugin, overridable the same way.
+    ldk-server-wallet-src = {
+      url = "github:benthecarman/ldk-server-wallet";
+      flake = false;
+    };
   };
 
   outputs =
@@ -24,6 +29,7 @@
       nixpkgs,
       mesh-llm-src,
       nwc-wallet-src,
+      ldk-server-wallet-src,
     }:
     let
       inherit (nixpkgs) lib;
@@ -43,6 +49,7 @@
           rev ? src.rev or null,
           uiPnpmDepsHash ? null,
           nwcWalletSrc ? nwc-wallet-src,
+          ldkServerWalletSrc ? ldk-server-wallet-src,
         }:
         pkgs.callPackage ./nix {
           inherit
@@ -50,6 +57,7 @@
             rev
             uiPnpmDepsHash
             nwcWalletSrc
+            ldkServerWalletSrc
             ;
         };
 
@@ -91,6 +99,7 @@
             native-runtime-cpu
             native-runtime-vulkan
             nwc-wallet
+            ldk-server-wallet
             ;
           inherit (cudaMeshPkgs) mesh-llm-cuda native-runtime-cuda;
         }
