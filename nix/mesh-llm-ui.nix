@@ -3,6 +3,9 @@
   fetchPnpmDeps,
   nodejs_24,
   pnpm_10,
+  # nixos-26.05 marks its pnpm_10 (10.34.0) insecure and ships the fixed
+  # release as pnpm_10_latest; nixos-unstable's pnpm_10 is already fixed.
+  pnpm_10_latest ? pnpm_10,
   pnpmConfigHook,
   meshLlmSrc,
   meshLlmVersion,
@@ -18,13 +21,13 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
   nativeBuildInputs = [
     nodejs_24
-    pnpm_10
+    pnpm_10_latest
     pnpmConfigHook
   ];
 
   pnpmDeps = fetchPnpmDeps {
     inherit (finalAttrs) pname version src;
-    pnpm = pnpm_10;
+    pnpm = pnpm_10_latest;
     fetcherVersion = 3;
     hash = uiPnpmDepsHash;
   };
