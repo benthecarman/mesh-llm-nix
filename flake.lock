@@ -19,11 +19,11 @@
     "mesh-llm-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1791324995,
-        "narHash": "sha256-WAyAMTa/EvCTsJRupup2J5rpepmAGRVZt3YWMoSo9kg=",
+        "lastModified": 1792231933,
+        "narHash": "sha256-9gDSdgJ5FLvoN1eR41Mw5a8NbnSTF59wIJUDjEqtQQQ=",
         "owner": "Mesh-LLM",
         "repo": "mesh-llm",
-        "rev": "f7a7b1e62fd0be83ee7590b122dbf97c7c156a0a",
+        "rev": "bd59a1656c29be93de3d52b540f52aad8219d9de",
         "type": "github"
       },
       "original": {
