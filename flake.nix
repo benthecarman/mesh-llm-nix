@@ -21,6 +21,11 @@
       url = "github:benthecarman/ldk-server-wallet";
       flake = false;
     };
+    # The external OpenAI-compatible endpoint plugin, overridable the same way.
+    openai-endpoint-src = {
+      url = "github:Mesh-LLM/openai-endpoint/v0.2.0";
+      flake = false;
+    };
   };
 
   outputs =
@@ -30,6 +35,7 @@
       mesh-llm-src,
       nwc-wallet-src,
       ldk-server-wallet-src,
+      openai-endpoint-src,
     }:
     let
       inherit (nixpkgs) lib;
@@ -50,6 +56,7 @@
           uiPnpmDepsHash ? null,
           nwcWalletSrc ? nwc-wallet-src,
           ldkServerWalletSrc ? ldk-server-wallet-src,
+          openaiEndpointSrc ? openai-endpoint-src,
         }:
         pkgs.callPackage ./nix {
           inherit
@@ -58,6 +65,7 @@
             uiPnpmDepsHash
             nwcWalletSrc
             ldkServerWalletSrc
+            openaiEndpointSrc
             ;
         };
 
@@ -100,6 +108,7 @@
             native-runtime-vulkan
             nwc-wallet
             ldk-server-wallet
+            openai-endpoint
             ;
           inherit (cudaMeshPkgs) mesh-llm-cuda native-runtime-cuda;
         }

@@ -19,11 +19,11 @@
     "mesh-llm-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1792231933,
-        "narHash": "sha256-9gDSdgJ5FLvoN1eR41Mw5a8NbnSTF59wIJUDjEqtQQQ=",
+        "lastModified": 1792386307,
+        "narHash": "sha256-1Wv6WGpes/pyFme+fxlu/ErEUngC/QtMS7YqXQogOto=",
         "owner": "Mesh-LLM",
         "repo": "mesh-llm",
-        "rev": "bd59a1656c29be93de3d52b540f52aad8219d9de",
+        "rev": "60697c61755b7280c22d3ab9d9bcf5b663e8ae3b",
         "type": "github"
       },
       "original": {
@@ -64,12 +64,30 @@
         "type": "github"
       }
     },
+    "openai-endpoint-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789212371,
+        "narHash": "sha256-Dkxckn9l4JkAGATVRAHVZVB52icYXkRtQCvtncTh7QU=",
+        "owner": "Mesh-LLM",
+        "repo": "openai-endpoint",
+        "rev": "9166c6a918cda73fe4c05912ed9b06446bb95e60",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mesh-LLM",
+        "ref": "v0.2.0",
+        "repo": "openai-endpoint",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "ldk-server-wallet-src": "ldk-server-wallet-src",
         "mesh-llm-src": "mesh-llm-src",
         "nixpkgs": "nixpkgs",
-        "nwc-wallet-src": "nwc-wallet-src"
+        "nwc-wallet-src": "nwc-wallet-src",
+        "openai-endpoint-src": "openai-endpoint-src"
       }
     }
   },

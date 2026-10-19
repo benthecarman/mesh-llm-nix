@@ -34,6 +34,7 @@ below.
 | `llama-cpp-skippy` | llama.cpp source with the Skippy patches applied |
 | `nwc-wallet` | The [Nostr Wallet Connect wallet plugin](https://github.com/benthecarman/nwc-wallet) |
 | `ldk-server-wallet` | The [LDK Server wallet plugin](https://github.com/benthecarman/ldk-server-wallet) |
+| `openai-endpoint` | The [external OpenAI-compatible endpoint plugin](https://github.com/Mesh-LLM/openai-endpoint) |
 
 MeshLLM loads its inference engine from a separate native runtime: patched
 llama.cpp shared libraries and a `manifest.json`. Upstream release archives
@@ -233,9 +234,28 @@ address, its TLS certificate, and a file holding a hex macaroon:
 
 The macaroon authorizes spending, so treat it like the NWC URI.
 
-To build a plugin from another revision, override the `nwc-wallet-src` or
-`ldk-server-wallet-src` input like `mesh-llm-src`, or pass `nwcWalletSrc` or
-`ldkServerWalletSrc` to `lib.mkPackages`.
+To serve, and sell, models from an OpenAI-compatible server that is already
+running, point the endpoint plugin at its HTTP base URL. The server must
+answer without an API key, so keep it on loopback. No local model or native
+runtime is needed:
+
+```nix
+services.mesh-llm.settings = {
+  runtime.mode = "on_demand";
+  plugin = [
+    {
+      name = "openai-endpoint";
+      command = lib.getExe mesh-llm-nix.packages.${system}.openai-endpoint;
+      url = "http://127.0.0.1:8000/v1";
+    }
+  ];
+};
+```
+
+To build a plugin from another revision, override the `nwc-wallet-src`,
+`ldk-server-wallet-src` or `openai-endpoint-src` input like `mesh-llm-src`, or
+pass `nwcWalletSrc`, `ldkServerWalletSrc` or `openaiEndpointSrc` to
+`lib.mkPackages`.
 
 ## Override the build
 

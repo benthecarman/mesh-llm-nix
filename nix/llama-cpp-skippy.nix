@@ -49,6 +49,12 @@ stdenvNoCC.mkDerivation {
     git "''${git_identity[@]}" -c core.hooksPath=/dev/null am --3way \
       --committer-date-is-author-date --no-gpg-sign "''${patches[@]}"
 
+    # clef.cpp calls std::find without including <algorithm>, which GCC 16's
+    # headers no longer pull in transitively.
+    if [[ -f src/models/clef.cpp ]] && ! grep -q '#include <algorithm>' src/models/clef.cpp; then
+      sed -i '1i #include <algorithm>' src/models/clef.cpp
+    fi
+
     # The digest identifies the patch queue in the runtime manifest.
     for patch in "''${patches[@]}"; do
       printf '%s\n%s\n' "''${patch#"$patchDir"/}" "$(sha256sum "$patch" | cut -d' ' -f1)"

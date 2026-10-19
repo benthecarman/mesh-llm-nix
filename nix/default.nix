@@ -7,6 +7,7 @@
   uiPnpmDepsHash ? null,
   nwcWalletSrc,
   ldkServerWalletSrc,
+  openaiEndpointSrc,
 }:
 
 lib.makeScope newScope (
@@ -75,6 +76,9 @@ lib.makeScope newScope (
 
     inherit ldkServerWalletSrc;
     ldk-server-wallet = self.callPackage ./ldk-server-wallet.nix { };
+
+    inherit openaiEndpointSrc;
+    openai-endpoint = self.callPackage ./openai-endpoint.nix { };
 
     skippy = self.callPackage ./product.nix {
       pname = "skippy";
